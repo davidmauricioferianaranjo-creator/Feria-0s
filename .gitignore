@@ -28,6 +28,8 @@ dev-server*.log
 docs.tmp
 test_write
 npm
+*.bak
+*.bak_*
 
 # internal working notes not needed in the public app repository
 APLICAR*.md
