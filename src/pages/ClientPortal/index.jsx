@@ -15,7 +15,7 @@ import { APPLICATION_CATALOG, getPackageRule, applicationById } from '../../lib/
 import { downloadSimplePdf } from '../../lib/pdf';
 import { createPaymentLink, savePaymentLink } from '../../lib/stripe';
 import { DEMO_IDS } from '../../lib/operationalData';
-import { BadgeCheck, CheckCircle2, ClipboardList, FileText, Lock, Megaphone, MessagesSquare, Moon, PackageCheck, PanelRight, Presentation, Sun } from 'lucide-react';
+import { BadgeCheck, CheckCircle2, ClipboardList, FileText, Lock, Megaphone, Menu, MessagesSquare, Moon, PackageCheck, PanelRight, Presentation, Sun, X } from 'lucide-react';
 
 // ── COLORES ARKES ─────────────────────────────────────────────
 const COLORS = [
@@ -903,6 +903,7 @@ export default function ClientPortal() {
   };
 
   const [portalTheme, setPortalTheme] = useState(() => localStorage.getItem('feria_client_portal_theme') || 'dark');
+  const [portalMenuOpen, setPortalMenuOpen] = useState(false);
   const isDark = portalTheme === 'dark';
   const gold   = accentColor || '#E11D48';
 
@@ -942,6 +943,7 @@ export default function ClientPortal() {
     localStorage.setItem('feria_client_portal_theme', next);
     return next;
   });
+  const activeScreenMeta = SCREENS.find(s => s.id === screen) || SCREENS[0];
 
   if (!cliente) return (
     <div style={{ minHeight: '100vh', background: isDark ? '#09090B' : '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', color: portalColors.text, fontFamily: "'DM Sans', sans-serif" }}>
@@ -985,7 +987,22 @@ export default function ClientPortal() {
       </div>
 
       {/* NAV — con indicadores de estado */}
-      <div className="client-portal-nav" style={{ display: 'flex', padding: '0 24px', background: bgH, borderBottom: `1px solid ${border}`, overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+      <div className="client-portal-nav-shell" style={{ background: bgH, borderBottom: `1px solid ${border}`, padding: '10px 24px' }}>
+        <button
+          className="client-portal-menu-button"
+          onClick={() => setPortalMenuOpen(v => !v)}
+          aria-expanded={portalMenuOpen}
+          aria-label="Abrir menu del portal"
+          style={{ width:'100%', minHeight:44, border:`1px solid ${portalColors.border}`, background:portalColors.card, borderRadius:14, padding:'8px 12px', display:'flex', alignItems:'center', gap:10, color:portalColors.muted, fontFamily:'inherit', fontSize:12, cursor:'pointer' }}
+        >
+          <span style={{ width:28, height:28, borderRadius:10, background:`${gold}14`, color:gold, display:'inline-flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+            {portalMenuOpen ? <X size={17} strokeWidth={1.9} /> : <Menu size={17} strokeWidth={1.9} />}
+          </span>
+          <span>Menu</span>
+          <strong style={{ marginLeft:'auto', color:portalColors.text, fontSize:12, fontWeight:700 }}>{activeScreenMeta.label}</strong>
+        </button>
+      </div>
+      <div className="client-portal-nav" style={{ display: portalMenuOpen ? 'grid' : 'none', gridTemplateColumns: 'repeat(auto-fit,minmax(168px,1fr))', gap: 8, padding: '10px 24px', background: bgH, borderBottom: `1px solid ${border}`, overflowX: 'visible', WebkitOverflowScrolling: 'touch' }}>
         {SCREENS.map(s => {
           const status   = getScreenStatus(s.id, briefComplete, meetingUnlocked, approvalsReady, aprobacionesComplete, kitUnlocked);
           const isActive = screen === s.id;
@@ -1001,7 +1018,12 @@ export default function ClientPortal() {
           return (
             <button
               key={s.id}
-              onClick={() => !isLocked && !(s.id === 'brief' && briefComplete) && setScreen(s.id)}
+              onClick={() => {
+                if (!isLocked && !(s.id === 'brief' && briefComplete)) {
+                  setScreen(s.id);
+                  setPortalMenuOpen(false);
+                }
+              }}
               style={{
                 fontSize: 11, padding: '9px 12px', cursor: isLocked ? 'not-allowed' : (s.id === 'brief' && briefComplete) ? 'default' : 'pointer',
                 whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 8,
@@ -1041,7 +1063,8 @@ export default function ClientPortal() {
           .client-portal-theme{gap:4px!important;padding:3px!important}
           .client-portal-theme-label{display:none}
           .client-portal-logout{padding:5px 9px!important}
-          .client-portal-nav{padding:0 12px!important}
+          .client-portal-nav-shell{padding:8px 12px!important}
+          .client-portal-nav{grid-template-columns:1fr!important;padding:8px 12px!important}
           .client-portal-nav button{padding:8px 10px!important}
         }
       `}</style>
@@ -1051,7 +1074,7 @@ export default function ClientPortal() {
         {/* ══ MI PROYECTO ══ */}
         {screen === 'progreso' && (
           <>
-            <div style={{ padding: '36px 24px 24px', textAlign: 'center', borderBottom: '1px solid rgba(255,255,255,.04)' }}>
+            <div style={{ display: 'none' }}>
               <div style={{ fontSize: 10, letterSpacing: '.2em', textTransform: 'uppercase', color: 'rgba(201,169,110,.5)', marginBottom: 10 }}>Tu espacio</div>
               <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 26, fontWeight: 300, lineHeight: 1.2, marginBottom: 8 }}>
                 Tu marca está <em style={{ color: gold }}>tomando forma</em>

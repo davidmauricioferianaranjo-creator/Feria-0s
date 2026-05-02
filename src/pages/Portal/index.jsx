@@ -7,6 +7,7 @@ import {
   Eye,
   KeyRound,
   Lock,
+  Menu,
   Megaphone,
   MessagesSquare,
   PackageCheck,
@@ -81,6 +82,7 @@ function PortalScreen({ cliente, proyecto, equipo, adminPreview = false }) {
   const [chatInput, setChatInput] = useState('');
   const [chatAttachment, setChatAttachment] = useState(null);
   const [chatDragging, setChatDragging] = useState(false);
+  const [portalMenuOpen, setPortalMenuOpen] = useState(false);
   const fileInputRef = useRef(null);
   const [, setSaving] = useState(false);
 
@@ -154,6 +156,7 @@ function PortalScreen({ cliente, proyecto, equipo, adminPreview = false }) {
   const isKitUnlocked = adminPreview || proyecto.pctCliente >= 88 || Boolean(approvalActSigned);
   const answeredBrief = sentirData.filter(s => s.filled).length;
   const activeBrief = sentirData[sentirIdx] || sentirData[0];
+  const activeScreenMeta = SCREENS.find(s => s.id === screen) || SCREENS[0];
 
   // ── BRAND KIT COLORS ──
   const COLORS = [
@@ -187,36 +190,58 @@ function PortalScreen({ cliente, proyecto, equipo, adminPreview = false }) {
       </div>
 
       {/* NAV */}
-      <div className="admin-client-portal-nav" style={{ display: 'flex', padding: '0 24px', background: '#FFFFFF', borderBottom: '1px solid rgba(24,24,27,.08)', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
-        {SCREENS.map(s => {
-          const Icon = s.icon;
-          const isActive = screen === s.id;
-          const isDone = (s.id === 'brief' && answeredBrief === sentirData.length) ||
-                         (s.id === 'aprobaciones' && approvalActSigned) ||
-                         (s.id === 'brandkit' && deliveryActSigned);
-          const isLocked = s.id === 'brandkit' && !isKitUnlocked;
-          const navColor = isLocked ? '#D4D4D8' : isActive ? '#D13A52' : isDone ? '#64D49A' : '#71717A';
-          const navIconBg = isActive ? 'rgba(209,58,82,.10)' : isDone ? 'rgba(100,212,154,.12)' : 'rgba(24,24,27,.025)';
-          const navIconBorder = isActive ? 'rgba(209,58,82,.30)' : isDone ? 'rgba(100,212,154,.30)' : 'rgba(24,24,27,.10)';
-          return (
-            <button key={s.id} onClick={() => !isLocked && setScreen(s.id)} style={{
-              fontSize: 11, padding: '9px 12px', cursor: isLocked ? 'not-allowed' : 'pointer',
-              whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 8,
-              color: navColor,
-              borderBottom: isActive ? '1px solid #C9A96E' : '1px solid transparent',
-              background: 'transparent', border: 'none', fontFamily: 'inherit',
-              opacity: isLocked ? .58 : 1,
-            }}>
-              <span style={{ width: 24, height: 24, borderRadius: 8, flexShrink: 0, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: navIconBg, border: `1px solid ${navIconBorder}`, color: navColor }}>
-                {isDone ? <CheckCircle2 size={13} strokeWidth={2} /> : isLocked ? <Lock size={12} strokeWidth={1.8} /> : <Icon size={13} strokeWidth={1.8} />}
-              </span>
-              <span>{s.label}</span>
-            </button>
-          );
-        })}
+      <div className="admin-client-portal-nav-shell">
+        <button
+          className="admin-client-portal-menu-button"
+          onClick={() => setPortalMenuOpen(v => !v)}
+          aria-expanded={portalMenuOpen}
+          aria-label="Abrir menu del portal"
+        >
+          <span className="admin-client-portal-menu-icon">
+            {portalMenuOpen ? <X size={17} strokeWidth={1.9} /> : <Menu size={17} strokeWidth={1.9} />}
+          </span>
+          <span>Menu</span>
+          <strong>{activeScreenMeta.label}</strong>
+        </button>
+        <div className={`admin-client-portal-nav ${portalMenuOpen ? 'is-open' : ''}`}>
+          {SCREENS.map(s => {
+            const Icon = s.icon;
+            const isActive = screen === s.id;
+            const isDone = (s.id === 'brief' && answeredBrief === sentirData.length) ||
+                           (s.id === 'aprobaciones' && approvalActSigned) ||
+                           (s.id === 'brandkit' && deliveryActSigned);
+            const isLocked = s.id === 'brandkit' && !isKitUnlocked;
+            const navColor = isLocked ? '#D4D4D8' : isActive ? '#D13A52' : isDone ? '#64D49A' : '#71717A';
+            const navIconBg = isActive ? 'rgba(209,58,82,.10)' : isDone ? 'rgba(100,212,154,.12)' : 'rgba(24,24,27,.025)';
+            const navIconBorder = isActive ? 'rgba(209,58,82,.30)' : isDone ? 'rgba(100,212,154,.30)' : 'rgba(24,24,27,.10)';
+            return (
+              <button key={s.id} onClick={() => { if (!isLocked) { setScreen(s.id); setPortalMenuOpen(false); } }} style={{
+                cursor: isLocked ? 'not-allowed' : 'pointer',
+                color: navColor,
+                opacity: isLocked ? .58 : 1,
+              }}>
+                <span style={{ background: navIconBg, border: `1px solid ${navIconBorder}`, color: navColor }}>
+                  {isDone ? <CheckCircle2 size={13} strokeWidth={2} /> : isLocked ? <Lock size={12} strokeWidth={1.8} /> : <Icon size={13} strokeWidth={1.8} />}
+                </span>
+                <b>{s.label}</b>
+                {isActive && <small>Actual</small>}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <style>{`
+        .admin-client-portal-nav-shell{position:relative;background:#fff;border-bottom:1px solid rgba(24,24,27,.08);padding:10px 24px}
+        .admin-client-portal-menu-button{width:100%;min-height:44px;border:1px solid rgba(24,24,27,.10);background:#fff;border-radius:14px;padding:8px 12px;display:flex;align-items:center;gap:10px;color:#71717A;font-family:inherit;font-size:12px;cursor:pointer}
+        .admin-client-portal-menu-button strong{margin-left:auto;color:#18181B;font-size:12px;font-weight:700}
+        .admin-client-portal-menu-icon{width:28px;height:28px;border-radius:10px;background:rgba(209,58,82,.08);color:#D13A52;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+        .admin-client-portal-nav{display:none;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:10px}
+        .admin-client-portal-nav.is-open{display:grid}
+        .admin-client-portal-nav button{min-height:48px;border:1px solid rgba(24,24,27,.08);background:rgba(24,24,27,.02);border-radius:14px;padding:8px 10px;display:flex;align-items:center;gap:10px;font-family:inherit;text-align:left}
+        .admin-client-portal-nav button span{width:28px;height:28px;border-radius:10px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center}
+        .admin-client-portal-nav button b{font-size:12px;font-weight:700;line-height:1.1;flex:1}
+        .admin-client-portal-nav button small{font-size:9px;color:#C9A96E;text-transform:uppercase;letter-spacing:.08em}
         @media (max-width:520px){
           .admin-client-portal-header{align-items:flex-start!important;padding:10px 14px!important;gap:8px!important}
           .admin-client-portal-brand{width:100%;font-size:15px!important}
@@ -224,8 +249,8 @@ function PortalScreen({ cliente, proyecto, equipo, adminPreview = false }) {
           .admin-client-portal-title-pill{order:3;width:100%;text-align:left;font-size:9px!important}
           .admin-client-portal-profile{flex:1 1 132px}
           .admin-client-portal-profile-name,.admin-client-portal-profile-service{max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-          .admin-client-portal-nav{padding:0 12px!important}
-          .admin-client-portal-nav button{padding:8px 10px!important}
+          .admin-client-portal-nav-shell{padding:8px 12px!important}
+          .admin-client-portal-nav{grid-template-columns:1fr!important}
         }
       `}</style>
 
