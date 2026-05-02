@@ -1,0 +1,187 @@
+/* ── mobile.css ─────────────────────────────────────────────────────────────
+   Agregar al final de src/styles/globals.css (o importar en App.js)
+   Mejoras de UX/UI para pantallas < 768px — Feria OS v2
+   ─────────────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+
+  /* ── Layout global ─────────────────────────────────────────── */
+  .feria-sidebar {
+    position: fixed !important;
+    left: -240px;
+    z-index: 300;
+    height: 100%;
+    transition: left .25s ease;
+  }
+  .feria-sidebar.open {
+    left: 0;
+    box-shadow: 8px 0 32px rgba(0,0,0,.6);
+  }
+  .feria-main {
+    margin-left: 0 !important;
+    padding: 12px !important;
+  }
+
+  /* ── Topbar ────────────────────────────────────────────────── */
+  .feria-topbar {
+    padding: 10px 14px !important;
+  }
+  .feria-topbar h1,
+  .feria-topbar .title {
+    font-size: 16px !important;
+  }
+
+  /* ── Cards y grids ─────────────────────────────────────────── */
+  [style*="grid-template-columns: repeat(4"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  [style*="grid-template-columns: repeat(3"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  [style*="grid-template-columns: 1fr 1fr 1fr"] {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  [style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Finanzas stats ────────────────────────────────────────── */
+  .finanzas-stats {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+
+  /* ── CRM Pipeline ──────────────────────────────────────────── */
+  .crm-pipeline {
+    flex-direction: column !important;
+    overflow-x: unset !important;
+  }
+  .crm-pipeline-col {
+    min-width: unset !important;
+    width: 100% !important;
+  }
+
+  /* ── Kanban board ──────────────────────────────────────────── */
+  .kanban-board {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* ── Contratos ─────────────────────────────────────────────── */
+  .contrato-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .contrato-stats {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  /* ── Mensajes ──────────────────────────────────────────────── */
+  .mensajes-sidebar {
+    width: 100% !important;
+    display: none;
+  }
+  .mensajes-sidebar.active {
+    display: flex !important;
+  }
+  .mensajes-conv {
+    flex: 1 !important;
+    width: 100% !important;
+  }
+
+  /* ── Modales ───────────────────────────────────────────────── */
+  [style*="position: fixed"][style*="zIndex"] > div {
+    max-height: 92vh !important;
+    overflow-y: auto !important;
+    margin: 8px !important;
+    width: calc(100vw - 16px) !important;
+    max-width: unset !important;
+    border-radius: 14px !important;
+  }
+
+  /* ── Botones en fila ───────────────────────────────────────── */
+  .btn-row {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+
+  /* ── Formularios ───────────────────────────────────────────── */
+  [style*="grid-template-columns: 1fr 1fr"],
+  [style*="gridTemplateColumns: '1fr 1fr'"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Tablas de datos ───────────────────────────────────────── */
+  .data-table {
+    font-size: 11px !important;
+  }
+  .data-table th,
+  .data-table td {
+    padding: 6px 8px !important;
+  }
+
+  /* ── CobrosList botones ────────────────────────────────────── */
+  .cobros-actions {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+  .cobros-actions button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* ── Charts / gráficas ─────────────────────────────────────── */
+  .recharts-wrapper {
+    font-size: 10px !important;
+  }
+
+  /* ── Admin tabs ────────────────────────────────────────────── */
+  .admin-tabs {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+  }
+  .admin-tabs::-webkit-scrollbar { display: none; }
+
+  /* ── Cotizaciones landing (preview) ─────────────────────────── */
+  .cotizacion-landing {
+    padding: 8px !important;
+  }
+
+  /* ── PostFirmaPanel ────────────────────────────────────────── */
+  .post-firma-panel {
+    width: calc(100vw - 24px) !important;
+  }
+
+  /* ── Typography ─────────────────────────────────────────────── */
+  .serif-hero {
+    font-size: clamp(20px, 5vw, 32px) !important;
+  }
+  .section-title {
+    font-size: 14px !important;
+  }
+
+  /* ── Portada landing cotización ─────────────────────────────── */
+  .lp-cover-title {
+    font-size: 24px !important;
+  }
+  .lp-pkg-price {
+    font-size: 28px !important;
+  }
+}
+
+/* ── Touch improvements (todos los tamaños) ─────────────────── */
+button, [role="button"] {
+  min-height: 36px;
+  -webkit-tap-highlight-color: transparent;
+}
+input, select, textarea {
+  font-size: 16px !important; /* Evita zoom en iOS al hacer focus */
+}
+
+/* ── Scrollbar delgado en desktop ───────────────────────────── */
+@media (min-width: 769px) {
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-m); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border); }
+}

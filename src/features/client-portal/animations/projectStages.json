@@ -1,0 +1,54 @@
+{
+  "stages": [
+    {
+      "min": 0,
+      "max": 2,
+      "key": "brief",
+      "title": "Reuniendo ingredientes",
+      "copy": "Estamos ordenando tus ideas, referencias y objetivos para empezar con claridad.",
+      "dish": "Brief",
+      "accent": "#86B6FF",
+      "motion": "notes"
+    },
+    {
+      "min": 3,
+      "max": 5,
+      "key": "prep",
+      "title": "Preparando la receta",
+      "copy": "El equipo está traduciendo tu brief en decisiones visuales y dirección creativa.",
+      "dish": "Estrategia",
+      "accent": "#C9A96E",
+      "motion": "stir"
+    },
+    {
+      "min": 6,
+      "max": 7,
+      "key": "cooking",
+      "title": "Tu proyecto se está cocinando",
+      "copy": "Estamos refinando opciones, jerarquías y detalles para que la presentación llegue bien sazonada.",
+      "dish": "Diseño",
+      "accent": "#E25569",
+      "motion": "steam"
+    },
+    {
+      "min": 8,
+      "max": 9,
+      "key": "plating",
+      "title": "Estamos emplatando",
+      "copy": "La propuesta está cerca de llegar a revisión. Quedan ajustes finos antes de servirla.",
+      "dish": "Presentación",
+      "accent": "#4ECDC4",
+      "motion": "plate"
+    },
+    {
+      "min": 10,
+      "max": 99,
+      "key": "ready",
+      "title": "Tu plato está listo",
+      "copy": "El Brand Kit y los archivos finales quedan servidos para descargar y usar.",
+      "dish": "Brand Kit",
+      "accent": "#7BC67A",
+      "motion": "ready"
+    }
+  ]
+}
