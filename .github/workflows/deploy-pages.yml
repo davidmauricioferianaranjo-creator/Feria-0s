@@ -18,6 +18,10 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      CI: false
+      GENERATE_SOURCEMAP: false
+      NPM_CONFIG_LEGACY_PEER_DEPS: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,6 +31,11 @@ jobs:
         with:
           node-version: 20
           cache: npm
+
+      - name: Print tool versions
+        run: |
+          node --version
+          npm --version
 
       - name: Install dependencies
         run: npm ci
